@@ -1,0 +1,425 @@
+//This code was made for the Robocup 2022 - Onstage.
+//Team MXNSTERS - Mexico. Made by Joel Alberto Garza Muñoz 
+//Crane door 
+
+#define REDPIN 3
+#define GREENPIN 4
+#define BLUEPIN 5
+                                
+#define REDPIN_2 12
+#define GREENPIN_2 13
+#define BLUEPIN_2 11
+
+#define REDPIN_3 22
+#define GREENPIN_3 23
+#define BLUEPIN_3 24
+
+
+#define FADETIME 1
+
+#define headlight 9
+#define laser 10 //digital pin for the laser
+#define LDR 0    //analog pin for the LDR
+
+int VALUE;       //variable 
+
+int r, g, b;
+char c;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(headlight, OUTPUT);
+
+  off();
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  if (Serial.available())
+  {
+     c=Serial.read();
+     if(c=='1'){
+     Serial.println("1");
+     digitalWrite(headlight, LOW);
+     off();
+     }
+     
+     else if(c=='2'){
+     Serial.println("2");
+     digitalWrite(headlight, HIGH);
+
+    both_cyan();
+    delay(900);
+
+    off();
+
+    green_3();
+    delay(1000);
+
+    off();
+
+    white();
+    delay(50);
+
+    off();
+
+    white_2();
+    delay(50);
+
+    off();
+
+    white_3();
+    delay(50);
+
+    off();
+
+    white();
+    delay(50);
+
+    off();
+
+    white_2();
+    delay(50);
+
+    off();
+
+    white_3();
+    delay(50);
+
+    off();
+
+    white();
+    delay(50);
+
+    off();
+
+    white_2();
+    delay(50);
+
+    off();
+
+    white_3();
+    delay(50);
+
+    off();
+
+    white();
+    delay(50);
+
+    off();
+
+    white_2();
+    delay(50);
+
+    off();
+
+    white_3();
+    delay(50);
+
+    off();
+
+    white();
+    delay(50);
+
+    off();
+
+    white_2();
+    delay(50);
+
+    off();
+
+    white_3();
+    delay(50);
+
+    off();
+
+    white();
+    delay(50);
+
+    off();
+
+    white_2();
+    delay(50);
+
+    off();
+
+    white_3();
+    delay(50);
+
+    off();
+
+    white();
+    delay(50);
+
+    off();
+
+    white_2();
+    delay(50);
+
+    off();
+
+    both_green();
+    delay(900);
+
+    off();
+
+    cyan_3();
+    delay(600);
+
+    off();
+
+     }
+   }
+ }
+
+void off() {
+
+   digitalWrite(REDPIN, LOW);
+   digitalWrite(GREENPIN, LOW);
+   digitalWrite(BLUEPIN, LOW); 
+
+   digitalWrite(REDPIN_2, LOW);
+   digitalWrite(GREENPIN_2, LOW);
+   digitalWrite(BLUEPIN_2, LOW);
+
+   digitalWrite(REDPIN_3, LOW);
+   digitalWrite(GREENPIN_3, LOW);
+   digitalWrite(BLUEPIN_3, LOW);
+   
+   digitalWrite(laser, LOW);
+}
+
+void red() {
+
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN, r);
+     delay(FADETIME);
+     } 
+}
+
+void red_2() {
+
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN_2, r);
+     delay(FADETIME);
+     } 
+}
+
+void green() {
+
+  for (g = 0; g < 256; g++) { 
+     analogWrite(GREENPIN, g);
+     delay(FADETIME);
+     } 
+}
+
+void green_2() {
+
+  for (g = 0; g < 256; g++) { 
+     analogWrite(GREENPIN_2, g);
+     delay(FADETIME);
+     } 
+}
+
+void green_3() {
+
+  for (g = 0; g < 256; g++) { 
+     analogWrite(GREENPIN_3, g);
+     delay(FADETIME);
+     } 
+}
+
+void both_green() {
+
+  for (g = 0; g < 256; g++) { 
+     analogWrite(GREENPIN, g);
+     analogWrite(GREENPIN_2, g);
+     delay(FADETIME);
+     } 
+}
+
+void blue() {
+
+  for (b = 0; b < 256; b++) { 
+     analogWrite(BLUEPIN, b);
+     delay(FADETIME);
+     } 
+}
+
+void blue_2() {
+
+  for (b = 0; b < 256; b++) { 
+     analogWrite(BLUEPIN_2, b);
+     delay(FADETIME);
+     } 
+}
+
+void cyan() {
+  g=0;
+  
+  for (b = 0; b < 256; b++) { 
+     analogWrite(BLUEPIN, b);
+     analogWrite(GREENPIN, g);
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void cyan_2() {
+  g=0;
+  
+  for (b = 0; b < 256; b++) { 
+     analogWrite(BLUEPIN_2, b);
+     analogWrite(GREENPIN_2, g);
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void cyan_3() {
+  g=0;
+  
+  for (b = 0; b < 256; b++) { 
+     analogWrite(BLUEPIN_3, b);
+     analogWrite(GREENPIN_3, g);
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void both_cyan() {
+  g=0;
+  
+  for (b = 0; b < 256; b++) { 
+     analogWrite(BLUEPIN, b);
+     analogWrite(BLUEPIN_2, b);
+     analogWrite(GREENPIN, g);
+     analogWrite(GREENPIN_2, g);
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void white() {
+  b=0;
+  g=0;
+ 
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN, r);
+     analogWrite(BLUEPIN, b);
+     analogWrite(GREENPIN, g);
+     b++;
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void white_2() {
+  b=0;
+  g=0;
+ 
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN_2, r);
+     analogWrite(BLUEPIN_2, b);
+     analogWrite(GREENPIN_2, g);
+     b++;
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void white_3() {
+  b=0;
+  g=0;
+ 
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN_3, r);
+     analogWrite(BLUEPIN_3, b);
+     analogWrite(GREENPIN_3, g);
+     b++;
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void both_white() {
+  b=0;
+  g=0;
+ 
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN, r);
+     analogWrite(REDPIN_2, r);
+     analogWrite(BLUEPIN, b);
+     analogWrite(BLUEPIN_2, b);
+     analogWrite(GREENPIN, g);
+     analogWrite(GREENPIN_2, g);
+     b++;
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void all_white() {
+  b=0;
+  g=0;
+ 
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN, r);
+     analogWrite(REDPIN_2, r);
+     analogWrite(REDPIN_3, r);
+     analogWrite(BLUEPIN, b);
+     analogWrite(BLUEPIN_2, b);
+     analogWrite(BLUEPIN_3, b);
+     analogWrite(GREENPIN, g);
+     analogWrite(GREENPIN_2, g);
+     analogWrite(GREENPIN_3, g);
+     b++;
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void purple() {
+  b=0;
+  
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN, r);
+     analogWrite(BLUEPIN, b);
+     b++;
+     delay(FADETIME);
+     } 
+}
+
+void purple_2() {
+  b=0;
+  
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN, r);
+     analogWrite(BLUEPIN, b);
+     b++;
+     delay(FADETIME);
+     } 
+}
+
+void yellow() {
+  g=0;
+  
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN, r);
+     analogWrite(GREENPIN, g);
+     g++;
+     delay(FADETIME);
+     } 
+}
+
+void yellow_2() {
+  g=0;
+  
+  for (r = 0; r < 255; r++) { 
+     analogWrite(REDPIN_2, r);
+     analogWrite(GREENPIN_2, g);
+     g++;
+     delay(FADETIME);
+     } 
+}

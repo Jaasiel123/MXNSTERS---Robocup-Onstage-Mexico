@@ -1,0 +1,232 @@
+// This code was made for the Robocup 2022 - Onstage.
+// Team MXNSTERS - Mexico. Made by Izamary Vazquez Guerra.
+// Sullivan bot.
+
+// Libraries needed for the gyroscope.
+#include "I2Cdev.h"
+#include "MPU6050.h"
+#include "Wire.h"
+
+// Variables needed for the functioning of the gyroscope.
+const int mpuAddress = 0x68; 
+MPU6050 mpu(mpuAddress);
+int gx, gy, gz;
+long tiempo_prev, dt;
+float girosc_ang_x;
+float girosc_ang_x_prev;
+
+char msg; // Message from serial communication.
+
+// Pins where the wheels are connected to.
+int int1 = 4;
+int int2 = 5;
+int int3 = 6;
+int int4 = 7;
+int int5 = 8;
+int int6 = 9;
+int int7 = 45;
+int int8 = 44;
+
+// Pins used by the GY - 31 color sensor.
+#define S0 26
+#define S1 27
+#define S2 28
+#define S3 29
+#define OUT 30
+
+// Value of RED detected by GY - 31.
+int R = 0;
+
+// Values for the velocity of wheels.
+const int high = 220;
+const int low = 35;
+
+void setup() {
+  Serial.begin(9600); // to check GY-31 values.
+  Serial3.begin(9600); // communication with arduino.
+  Wire.begin(); // gyroscope
+  mpu.initialize();
+  Serial.println(mpu.testConnection() ? F("IMU iniciado correctamente") : F("Error al iniciar IMU")); // Serial print to make sure that the gyroscope has correctly started.
+
+  // Wheels.
+  pinMode(int1, OUTPUT);
+  pinMode(int2, OUTPUT);
+  pinMode(int3, OUTPUT);
+  pinMode(int4, OUTPUT);
+  pinMode(int5, OUTPUT);
+  pinMode(int6, OUTPUT);
+  pinMode(int7, OUTPUT);
+  pinMode(int8, OUTPUT);
+
+  // GY-31
+  pinMode(S0, OUTPUT);
+  pinMode(S1, OUTPUT);
+  pinMode(S2, OUTPUT);
+  pinMode(S3, OUTPUT);
+  pinMode(OUT, INPUT);
+
+  // Setting frequency-scaling to 20%
+  digitalWrite(S0, HIGH);
+  digitalWrite(S1, LOW);
+}
+
+void loop() {
+  initialPosition();
+  readColor();
+  printValues(); // GY-31 prints red values in the serial monitor.
+  if (R > 100 && R < 300) { // the color is orange.
+    Serial3.write('1'); // Sends the signal for the back's Arduino to say hi.
+    delay(6000);
+  }
+  front();
+  delay(6400);
+  turnRightGyroscope();
+  Serial3.write('2');
+  front();
+  delay(6400);
+  if(Serial3.available()){
+    msg == Serial3.read(); // the serial print is saved in msg
+    if(msg == '3'){
+      turnRightGyroscope();
+    }
+  }
+  Serial3.write('4');
+  front();
+  delay(6400);
+  turnRightGyroscope();
+  Serial3.write('5');
+  front();
+  delay(6400);
+  turnRightGyroscope();
+  Serial3.write('6');
+  after();
+}
+
+// GY31 reads the color
+void readColor() {
+  // Setting red filtered photodiodes to be read Red frequency
+  digitalWrite(S2, LOW);
+  digitalWrite(S3, LOW);
+  R = pulseIn(OUT, LOW);  // Reading the output Red frequency
+  delay(100);
+}
+
+// GY31 prints the RED values in serial monitor every 200 miliseconds
+void printValues() {
+  Serial.print("R= ");
+  Serial.println(R);
+  delay(200);
+}
+
+void front() {
+  // Wheels are controlled depending on the direction that is needed.
+  analogWrite(int1, high);
+  analogWrite(int2, low);
+  analogWrite(int3, low);
+  analogWrite(int4, high);
+  analogWrite(int5, high);
+  analogWrite(int6, low);
+  analogWrite(int7, low);
+  analogWrite(int8, high);
+}
+
+void turnRight() {
+  analogWrite(int1, high);
+  analogWrite(int2, low);
+  analogWrite(int3, low);
+  analogWrite(int4, high);
+  analogWrite(int5, high);
+  analogWrite(int6, low);
+  analogWrite(int7, low);
+  analogWrite(int8, high);
+}
+
+void turnLeft() {
+  analogWrite(int1, low);
+  analogWrite(int2, high);
+  analogWrite(int3, high);
+  analogWrite(int4, low);
+  analogWrite(int5, low);
+  analogWrite(int6, high);
+  analogWrite(int7, high);
+  analogWrite(int8, low);
+}
+
+void wait() {
+  analogWrite(int1, low);
+  analogWrite(int2, low);
+  analogWrite(int3, low);
+  analogWrite(int4, low);
+  analogWrite(int5, low);
+  analogWrite(int6, low);
+  analogWrite(int7, low);
+  analogWrite(int8, low);
+}
+
+// The values of the gyroscope are updated
+void updateGiro() {
+  dt = millis() - tiempo_prev;
+  tiempo_prev = millis();
+  girosc_ang_x = (gx / 131) * dt / 1000.0 + girosc_ang_x_prev;
+  girosc_ang_x_prev = girosc_ang_x;
+}
+
+// The values of the gyroscope are saved in the respective variables.
+void readGyroscope() {
+  // Leer las velocidades angulares
+  mpu.getRotation(&gx, &gy, &gz);
+  updateGiro();
+  // Mostrar resultados
+  Serial.print(F("Rotacion en X:  "));
+  Serial.print(girosc_ang_x);
+  delay(10);
+}
+
+// Sullivan makes sure that is facing fowards.
+void initialPosition() {
+  readGyroscope();
+  if (girosc_ang_x < -3) {
+    turnLeft();
+    delay(1);
+  }
+  if (girosc_ang_x > 3) {
+    turnRight();
+    delay(1);
+  }
+  if (girosc_ang_x < 3 && girosc_ang_x > -3) {
+    wait();
+  }
+}
+
+// Sullivan uses gyroscope to make a 90º turn
+void turnRightGyroscope(){
+  readGyroscope();
+  if (girosc_ang_x < (girosc_ang_x + 85)) {
+    turnLeft();
+    delay(1);
+  }
+  if (girosc_ang_x > (girosc_ang_x + 95)) {
+    turnRight();
+    delay(1);
+  }
+  if (girosc_ang_x < 95 && girosc_ang_x > 85) {
+    wait();
+  }
+}
+
+// What Sullivan does after going back to its initial position.
+void after(){
+  turnRight();
+  delay(500);
+  wait();
+  delay(1000);
+  turnLeft();
+  delay(500);
+  wait();
+  turnLeft();
+  delay(500);
+  wait();
+  turnRight();
+  delay(500);
+  wait();
+}

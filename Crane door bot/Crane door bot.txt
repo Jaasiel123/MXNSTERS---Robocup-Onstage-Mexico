@@ -1,0 +1,82 @@
+// This code was made for the Robocup 2022 - Onstage.
+// Team MXNSTERS - Mexico.
+// Crane door bot. Made by Jaasiel Neftalí Vázquez Rodríguez
+
+#include <SPI.h> // Includes SPI bus library
+#include <MFRC522.h> // Library for MFRC522 (proximity sensor)
+ 
+#define SS_PIN 53 // constant to reference slave select pin
+#define RST_PIN 5 // constant to reference reset pin
+#define RELE 2 // output pin for solid state relays
+#define RELE_1 3 // output pin for solid state relays
+MFRC522 mfrc522(SS_PIN, RST_PIN);   // creates mfrc522 object sending slave select and reset pin constants
+ 
+void setup() 
+{
+  Serial.begin(9600);   // Initializes serial monitor communication 
+  SPI.begin();      // Initializes SPI bus
+  mfrc522.PCD_Init();    // Initialize reader module
+  pinMode(RELE, OUTPUT); 
+  pinMode(RELE_1, OUTPUT); 
+  Serial.println("Put your card to the reader..."); // Initializes an instruction to put the card or keyfob in the serial monitor
+  Serial.println(); 
+}
+void loop() 
+{
+  // Conditional to see if it is in proximity to the reader
+  if ( ! mfrc522.PICC_IsNewCardPresent()) // If no card is present
+  {
+    return; // Returns to the loop waiting for a card
+  }
+  // If we obtain information from it
+  if ( ! mfrc522.PICC_ReadCardSerial()) // If it cannot obtain data from the card
+  {
+    return; // Returns to the loop waiting for another card
+  }
+ 
+  Serial.print("UID tag :"); // Displays UID: text for the unique identifier via the for loop
+  String content= ""; // String to print blanks
+  byte letter; // Either 4 or 8 bytes the letters that correspond to the key ring code
+  
+  // The object mfrc522.uid.size has a function that allows to obtain the size of the UID for the card and the key ring, which are 4 bytes.
+  for (byte i = 0; i < mfrc522.uid.size; i++)  // Loop goes through the UID one byte at a time, we declare the variable "i" of type byte, 
+                                               // and so that the condition for it to remain in the loop is that "i" is less than mfrc522.uid.size, 
+                                                
+  { 
+     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "); // Prints the UID byte read in hexadecimal, also prints blank space and zero number,
+                                                              // what we do is add a 0 in front of the value read and a blank space 
+                                                              // if the value read is greater than or equal to the number 10 in hexadecimal, from letters A to F 
+                                                              
+     // In addition to this print a blank space to separate one value from the other
+     Serial.print(mfrc522.uid.uidByte[i], HEX); // Prints the byte of the UID read in hexadecimal, as we are in the for loop, 
+                                                // the variable "i" will go from 0 to 3 obtaining 4 bytes of the UID, 
+                                                // and HEX indicates that we will be displaying the text on the serial monitor in Hexadecimal format.
+     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ")); // With the content.concat function allows us to make a string so that 
+                                                                       // print blank space and number zero, what we do is add a 0 in front of the value read.
+                                                                       // and a blank space if the value read is greater than or equal to the number 10 in hexadecimal, letters A through F
+     // and also to print the white space to separate one value from the other.
+     content.concat(String(mfrc522.uid.uidByte[i], HEX)); // Also with the function content.concat we make a string to print the byte of the UID read in hexadecimal,
+                                                          // as we are in the for loop, the variable "i" will go from 0 to 3 obtaining 4 bytes of the UID, 
+                                                          // and HEX indicates that we will be displaying the text on the serial monitor in Hexadecimal format. 
+  }
+  Serial.println(); 
+  Serial.print("Message : "); 
+  content.toUpperCase(); // Modifies the String in place rather than returning a new one.
+  if (content.substring(1) == "E3 91 04 00") // Change here the UID of the card/key ring as many times as you want to get the access
+  {
+    Serial.println("Authorized access");   
+    Serial.println(); 
+    // The RELE pin will allow access to current for 18 seconds and then deactivate, this will allow the door to rise
+    digitalWrite(RELE, HIGH); 
+    delay(18000);
+    digitalWrite(RELE, LOW); 
+  }
+ 
+ else   { 
+    Serial.println("Access denied"); // In this case it would be the keychain that would be the access denied and will do the following
+    // the RELE_1 pin will allow access to the current for 18 seconds and then deactivate, this will allow the door to descend
+    digitalWrite(RELE_1, HIGH); 
+    delay(18000); 
+    digitalWrite(RELE_1, LOW);  
+  }
+}

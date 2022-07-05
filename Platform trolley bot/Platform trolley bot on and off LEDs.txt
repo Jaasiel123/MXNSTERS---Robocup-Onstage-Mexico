@@ -1,0 +1,679 @@
+// This code was made for the Robocup 2022 - Onstage.
+// Team MXNSTERS - Mexico.
+// Platform trolley bot. Made by Jaasiel Neftali Vázquez Rodríguez
+
+#include <Adafruit_NeoPixel.h>
+
+Adafruit_NeoPixel tubo1 = Adafruit_NeoPixel(16, 2, NEO_GRB + NEO_KHZ800); // creation of "strip" object
+Adafruit_NeoPixel tubo2 = Adafruit_NeoPixel(16, 3, NEO_GRB + NEO_KHZ800); 
+Adafruit_NeoPixel tubo3 = Adafruit_NeoPixel(16, 4, NEO_GRB + NEO_KHZ800); 
+Adafruit_NeoPixel tubo4 = Adafruit_NeoPixel(16, 5, NEO_GRB + NEO_KHZ800); 
+
+
+int led;
+
+
+ void off () { // NONE LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 0, 0, 0);   // each pixel in none color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 0, 0, 0);   
+    tubo3.setPixelColor(i, 0, 0, 0);    
+    tubo4.setPixelColor(i, 0, 0, 0); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  } 
+  
+ }
+
+
+ void on_red () { // RED LEDs increase
+
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 255, 0, 0);   // each pixel in red color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,
+                                        // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 255, 0, 0);   
+    tubo3.setPixelColor(i, 255, 0, 0);   
+    tubo4.setPixelColor(i, 255, 0, 0);   
+    
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();     
+    tubo3.show();      
+    tubo4.show(); 
+         
+    delay(50);       
+  } 
+ 
+ }
+
+  void off_red () {  // RED LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 255, 0, 0);   // each pixel in red color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 255, 0, 0);   
+    tubo3.setPixelColor(i, 255, 0, 0);    
+    tubo4.setPixelColor(i, 255, 0, 0); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  }
+  
+ }
+
+
+ void on_green () { // GREEN LEDs increase
+
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 0, 255, 0);   // each pixel in green color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,
+                                        // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 0, 255, 0);   
+    tubo3.setPixelColor(i, 0, 255, 0);   
+    tubo4.setPixelColor(i, 0, 255, 0);   
+    
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();     
+    tubo3.show();      
+    tubo4.show(); 
+         
+    delay(50);       
+  } 
+  
+ }
+
+  void off_green () { // GREEN LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 0, 255, 0);   // each pixel in green color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 0, 255, 0);   
+    tubo3.setPixelColor(i, 0, 255, 0);    
+    tubo4.setPixelColor(i, 0, 255, 0); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  }
+  
+ }
+
+void on_skyblue () { // SKYBLUE LEDs increase
+
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 0, 255, 255);   // each pixel in skyblue color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,
+                                        // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 0, 255, 255);   
+    tubo3.setPixelColor(i, 0, 255, 255);   
+    tubo4.setPixelColor(i, 0, 255, 255);   
+    
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();     
+    tubo3.show();      
+    tubo4.show(); 
+         
+    delay(50);       
+  }
+  
+}
+
+ void off_skyblue () { // SKYBLUE LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 0, 255, 255);   // each pixel in skyblue color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 0, 255, 255);   
+    tubo3.setPixelColor(i, 0, 255, 255);    
+    tubo4.setPixelColor(i, 0, 255, 255); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  }
+  
+ }
+
+
+void on_yellow () { // YELLOW LEDs increase
+  
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 255, 255, 0);   // each pixel in yellow color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,
+                                        // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 255, 255, 0);   
+    tubo3.setPixelColor(i, 255, 255, 0);   
+    tubo4.setPixelColor(i, 255, 255, 0);   
+    
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();     
+    tubo3.show();      
+    tubo4.show(); 
+         
+    delay(50);       
+  }
+
+}
+
+ void off_yellow () { // YELLOW LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 255, 255, 0);   // each pixel in yellow color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 255, 255, 0);   
+    tubo3.setPixelColor(i, 255, 255, 0);    
+    tubo4.setPixelColor(i, 255, 255, 0); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  }
+  
+ }
+
+
+
+void on_magenta () { // MAGENTA LEDs increase
+  
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 255, 0, 255);   // each pixel in magenta color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,
+                                        // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 255, 0, 255);   
+    tubo3.setPixelColor(i, 255, 0, 255);   
+    tubo4.setPixelColor(i, 255, 0, 255);   
+    
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();     
+    tubo3.show();      
+    tubo4.show(); 
+         
+    delay(50);       
+  }
+  
+}
+
+ void off_magenta () { // MAGENTA LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 255, 0, 255);   // each pixel in magenta color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 255, 0, 255);   
+    tubo3.setPixelColor(i, 255, 0, 255);    
+    tubo4.setPixelColor(i, 255, 0, 255); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  }
+  
+ }
+
+
+void on_violet () { // VIOLET LEDs increase
+
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 128, 0, 255);   // each pixel in violet color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,
+                                        // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 128, 0, 255);   
+    tubo3.setPixelColor(i, 128, 0, 255);   
+    tubo4.setPixelColor(i, 128, 0, 255);   
+    
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();     
+    tubo3.show();      
+    tubo4.show(); 
+         
+    delay(50);       
+  }
+  
+}
+
+ void off_violet () { // VIOLET LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 128, 0, 255);   // each pixel in violet color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 128, 0, 255);   
+    tubo3.setPixelColor(i, 128, 0, 255);    
+    tubo4.setPixelColor(i, 128, 0, 255); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  }
+  
+ }
+
+void on_cyan () { // CYAN LEDs increase
+
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 0, 255, 255);   // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,
+                                        // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 0, 255, 255);   
+    tubo3.setPixelColor(i, 0, 255, 255);   
+    tubo4.setPixelColor(i, 0, 255, 255);   
+    
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();     
+    tubo3.show();      
+    tubo4.show(); 
+         
+    delay(50);       
+  }
+  
+}
+
+ void off_cyan () { // CYAN LEDs decrease
+  
+    for(int i = 15; i >= 0; i--){   // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".
+                                    
+    tubo1.setPixelColor(i, 0, 255, 255);   // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo2.setPixelColor(i, 0, 255, 255);   
+    tubo3.setPixelColor(i, 0, 255, 255);    
+    tubo4.setPixelColor(i, 0, 255, 255); 
+      
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.show();      
+    tubo3.show();      
+    tubo4.show();      
+    
+    delay(50);       
+  }
+  
+ }
+
+ // The following functions are different colors in each tube, 
+ // and what it does is that they are not all evenly matched like the previous functions
+
+ void color_variation () {
+  
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    
+    tubo1.setPixelColor(i, 0, 255, 0);  // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo1.show();      // displays data in pixels sent by the command
+    delay(50);       
+  }
+
+    for(int i = 15; i >= 0; i--){    // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".       
+    tubo3.setPixelColor(i, 255, 0, 255);   // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color
+    tubo3.show();      // displays data in pixels sent by the command
+    delay(50);        
+  }
+
+    for(int i = 0; i < 16; i++){   
+    tubo2.setPixelColor(i, 128, 255, 0);   
+    tubo2.show();      
+    delay(50);       
+  }
+
+    for(int i = 15; i >= 0; i--){   
+    tubo4.setPixelColor(i, 255, 255, 0); 
+    tubo4.show();      
+    delay(50);       
+  }
+  
+ }
+
+
+ void color_variation2 () {
+  
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++".     
+    tubo3.setPixelColor(i, 255, 0, 255);   // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color  
+    tubo1.show();       // displays data in pixels sent by the command
+    delay(50);       
+  }
+
+    for(int i = 15; i >= 0; i--){    // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".      
+    tubo3.setPixelColor(i, 255, 0, 128);   // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color  
+    tubo3.show();      // displays data in pixels sent by the command
+    delay(50);      
+  }
+
+    for(int i = 0; i < 16; i++){  
+    tubo2.setPixelColor(i, 0, 255, 0);  
+    tubo2.show();      
+    delay(50);       
+  }
+
+    for(int i = 15; i >= 0; i--){   
+    tubo4.setPixelColor(i, 0, 0, 255);  
+    tubo4.show();      
+    delay(50);       
+  }
+  
+ }
+
+ void color_variation3 () {
+  
+    for(int i = 0; i < 16; i++){   // We define a variable to control the loop to traverse positions 0 to 16, by declaring "i" of type integer = 0, 
+                                    // the condition to remain inside the loop is that "i" is less than to 16 (the 0 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i++". 
+    tubo1.setPixelColor(i, 0, 255, 255);  // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color  
+    tubo3.setPixelColor(i, 0, 255, 255);   
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo3.show();      
+    delay(50);      
+  }
+
+    for(int i = 15; i >= 0; i--){    // We define a variable to control the loop to traverse positions 15 to 0, by declaring "i" of type integer = 15, 
+                                    // the condition to remain inside the loop is that "i" is greater than or equal to 0 (the 16 is for the position of the neopixels),  
+                                    // and with each interaction we must decrement by 1, that's why we change to "i--".  
+    tubo2.setPixelColor(i, 128, 0, 255);  // each pixel in cyan color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip,  
+                                       // the others are to indicate a value from 0-255 of each color  
+    tubo4.setPixelColor(i, 128, 0, 255);   
+    tubo2.show();     // displays data in pixels sent by the command
+    tubo4.show();     
+    delay(50);      
+  }
+
+    for(int i = 0; i < 16; i++){  
+    tubo1.setPixelColor(i, 255, 255, 0);   
+    tubo4.setPixelColor(i, 255, 255, 0); 
+    tubo1.show();     
+    tubo4.show();      
+    delay(50);      
+  }
+
+
+    for(int i = 15; i >= 0; i--){  
+    tubo2.setPixelColor(i, 255, 128, 0);  
+    tubo3.setPixelColor (i, 255, 128, 0);  
+    tubo2.show();      
+    tubo3.show();    
+    delay(50);      
+  }
+  
+ }
+
+void setup() {
+  tubo1.begin();   // Start the strip   
+  tubo1.show();    // Creates the show function
+  tubo2.begin();       
+  tubo2.show();   
+  tubo3.begin();      
+  tubo3.show();    
+  tubo4.begin();      
+  tubo4.show();  
+  pinMode(A1,INPUT);  // Analog input of sensor KY-038
+  pinMode(6,INPUT);   // Digital input of sensor KY-038
+  Serial.begin(9600);  // Start the Serial for the sensor KY-038
+
+}
+
+void loop() {
+  
+  tubo1.setBrightness(255);  // We calibrate the brightness level from 0-255
+  tubo2.setBrightness(255);  
+  tubo3.setBrightness(255);  
+  tubo4.setBrightness(255);  
+  int a = analogRead(A1);   // We create a variable for the analog input of the sensor KY-038
+  int b = digitalRead(6);   // We create a variable for the digital input of the KY-038 sensor
+  Serial.println(b);   // In this case we will do it in this digital form
+
+
+  // We use this while to read if b is low and while it is reading it is going to read it
+  while (b == LOW){   
+   b = digitalRead(6); 
+    }
+// We create a cumulative variable "led" so that as the person shouts they will turn on.
+    while (led < 16) {     // We create this while to analyze that the variable will go from 0 to 16 neopixels in each Adressable RGB led strip.
+           
+  b = digitalRead(6); // It read digital input
+  
+  if(b >= HIGH){   // if the person makes a loud scream/noise then it will go up one neopixel per neopixel in each tube 
+    tubo1.setPixelColor(led, 255, 0, 0);   // each pixel in blue color (position,R,G,B) takes 4 parameters, the first parameter is the neopixel "0" because from there we start the strip, 
+                                           // the others are to indicate a value from 0-255 of each color
+    tubo1.show();      // displays data in pixels sent by the command
+    tubo2.setPixelColor(led, 255, 0, 0);   
+    tubo2.show();      
+    tubo3.setPixelColor(led, 255, 0, 0);   
+    tubo3.show();     
+    tubo4.setPixelColor(led, 255, 0, 0);  
+    tubo4.show();      
+    led++; // this is where the ++ led accumulates neopixels ranging from 0 to 16
+    delay (50);
+  }
+   
+}
+
+
+  on_skyblue ();
+  delay (500);
+    
+  color_variation ();
+  delay (500);
+
+  off_green ();
+  delay (2000);
+
+  on_yellow ();
+  delay (500);
+
+  color_variation2 ();
+  delay (500);
+ 
+  off_cyan ();
+  delay (2000);
+
+  on_magenta ();
+  delay (500);
+
+  color_variation3 ();
+  delay (500);
+
+  off_violet ();
+  delay (2000);
+
+  on_cyan ();
+  delay (500);
+
+  color_variation ();
+  delay (500);
+  
+  off_red ();
+  delay (2000);
+
+  on_green ();
+  delay (500);
+
+  color_variation2 ();
+  delay (500);
+  
+  off_magenta ();
+  delay (2000);
+
+  on_yellow ();
+  delay (500);
+
+  color_variation3 ();
+  delay (500);
+
+  off ();
+  delay (2000);
+
+  on_yellow ();
+  delay (500);
+
+  color_variation3 ();
+  delay (500);
+
+  off_magenta ();
+  delay (2000);
+  
+  on_green ();
+  delay (500);
+
+  color_variation2 ();
+  delay (500);
+  
+  off_red ();
+  delay (2000);
+  
+  on_cyan ();
+  delay (500);
+
+  color_variation ();
+  delay (500);
+
+  off_violet ();
+  delay (2000);
+
+  on_magenta ();
+  delay (500);
+
+  color_variation3 ();
+  delay (500);
+
+  off_cyan ();
+  delay (2000);
+
+  on_yellow ();
+  delay (500);
+
+  color_variation2 ();
+  delay (500);
+
+  off_green ();
+  delay (2000);
+
+  on_skyblue ();
+  delay (500);
+
+  color_variation ();
+  delay (500);
+  
+  on_skyblue ();
+  delay (500);
+
+  color_variation (); 
+  delay (500);
+
+  off_green ();
+  delay (2000);
+
+  on_yellow ();
+  delay (500);
+
+  color_variation2 ();
+  delay (500);
+ 
+  off_cyan ();
+  delay (2000);
+
+  on_magenta ();
+  delay (500);
+
+  color_variation3 ();
+  delay (500);
+
+  off_violet ();
+  delay (2000);
+
+  on_cyan ();
+  delay (500);
+
+  color_variation ();
+  delay (500);
+  
+  off_red ();
+  delay (2000);
+
+  on_green ();
+  delay (500);
+
+  color_variation2 ();
+  delay (500);
+
+  off_magenta ();
+  delay (2000);
+
+  on_yellow ();
+  delay (500);
+
+  color_variation3 ();
+  delay (500);
+
+  off ();
+  
+
+}

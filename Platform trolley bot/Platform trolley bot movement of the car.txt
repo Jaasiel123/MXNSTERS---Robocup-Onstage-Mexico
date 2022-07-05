@@ -1,0 +1,180 @@
+// This code was made for the Robocup 2022 - Onstage.
+// Team MXNSTERS - Mexico.
+// Sullivan bot
+// Made by Jaasiel Vázquez
+
+
+#include <Motors_of_Powerwheel.h> // Library for motors
+#include <Wire.h> // Library to comunicate SDA y SCL of the compass
+#include <LSM303.h> // Library for the compass
+
+Motors_of_Powerwheel motores (3,2,5,4); // Pins where they are connected to the Arduino
+LSM303 compass; //EAST increases, WEST decreases
+
+// Here the float is declared as a decimal to the directions for calibration and partly also for the compass positions
+float calibration;
+float north;
+float north1;
+float north2;
+float south;
+float south1;
+float south2;
+float east;
+float east1;
+float east2;
+float west;
+float west1;
+float west2;
+
+int limit = 8; // How much limit I have between north1 and north as well as example south1 and south
+
+int vel = 150; // Speed to control the movement of the car
+
+char option; // character variable to communicate the open mv with the arduino
+
+
+float heading; // We declare heading in float so that it is calibrated in decimal 
+
+void setup() {
+  
+  Serial.begin(115200); // Serial for the arduino
+  Serial2.begin (19200); // Serial for communication between the Open Mv and the Arduino
+
+// Predetermined calibration of the LSM303 part of the compass library 
+  Wire.begin();
+  compass.init();
+  compass.enableDefault();
+  compass.m_min = (LSM303::vector<int16_t>){-32767, -32767, -32767};
+  compass.m_max = (LSM303::vector<int16_t>){+32767, +32767, +32767};
+
+  // for to read the compass 30 times and match it to the heading and prevent it from starting instantly.
+
+  for(int i=0; i<30; i++){
+  compass.read();
+  heading = compass.heading();
+  delay(20);
+  }
+
+// We declare once again to exit the for calibrate the compass directions.
+  compass.read();
+  heading = compass.heading();
+
+
+  // Here we calibrate the directions north and south, east and north, west and north, and north and south.
+  calibration=heading;
+  north=calibration;
+
+  // SOUTH definition
+  if(north>=180){
+    south=north-180;
+  } else if (north<180){
+    south=180-north;
+    south=360-south;
+  }
+
+  //EAST definition
+  if(north>270){
+    east=360-north;
+    east=90-east;
+  } else if(north<=270){
+    east=north+90;
+  }
+
+  //WEST definition
+  if(north<90){
+    west=90-north;
+    west=360-west;
+  } else if (north>=90){
+    west=north-90;
+  }
+
+  //We define in the variables the limits between north-limit which is 8 and thus create a space between north and north1.
+  north1=north-limit;
+  north2=north+limit;
+  south1=south-limit;
+  south2=south+limit;
+  east1=east-limit;
+  east2=east+limit;
+  west1=west-limit;
+  west2=west+limit;
+  
+// We print the addresses so that they appear on the serial monitor.
+  Serial.print("NORTH=");
+  Serial.println(north);
+  Serial.print("SOUTH=");
+  Serial.println(south);
+  Serial.print("EAST=");
+  Serial.println(east);
+  Serial.print("WEST=");
+  Serial.println(west);
+
+  delay(1000);
+}
+
+void loop() {
+
+// We make a conditional function to communicate the Serial2 of the arduino to the Open Mv to pass the data to the Open Mv where it receives the code.
+    if (Serial2.available() > 0){
+    option = Serial2.read();
+    Serial.println(option);
+// We read again the compass and match it to the heading of the library and print it.
+  compass.read ();
+  heading = compass.heading();
+  Serial.println (heading);
+// motors.stop is set so that the compass does not react at the moment of calibration and avoids pointing in several directions.
+  motores.stop ();
+
+// Here if option (the variable that we put in char) receives the letter what it does is what is inside the braces 
+  if(option == 'F'){
+    while(!(north1<=heading && heading<=north2)){ // The while which is that if not between the north1 is less than or equal to the heading it compares it with the north2, 
+                                                  // Where here we orientate with the compass to the object of the trolley                                                 
+    Serial.println("RIGHT ");
+    compass.read();  //reorientacion
+    heading = compass.heading();
+  motores.to_the_right(vel); // If it is out of range, it accommodates it on the right side.
+  }
+  if(north1<=heading && heading<=north2){ // Here we ask if between north1 and north2 it moves to the north, and at the end we print NORTH
+    motores.forward (vel);
+    delay (4000);
+    motores.stop ();
+  Serial.println("NORTH");
+    }
+  }
+// Here if option (the variable that we put in char) receives the letter what it does is what is inside the braces 
+    if(option == 'R'){ 
+    while (!(south1<=heading && heading<=south2)){ // The while which is that if no between south1 is less than or equal to heading it compares it with south2, 
+                                                   // Here we orientate with the compass to the object of the trolley
+    Serial.println ("TURNING TO THE SOUTH"); // Here we put turning to the south by putting the qr code to make a 180 degree turn.
+    compass.read ();
+    heading = compass.heading ();
+    motores.to_the_right (vel); // If it is out of range, it accommodates it on the right side.
+    }
+    if(south1<=heading && heading<=south2){ // Here we ask if this between north1 and north2 moves to the SOUTH
+    motores.stop ();
+    delay (1000);
+    motores.forward (vel);
+    delay (4000);
+    motores.stop ();
+  }
+    }
+
+    if(option == 'L'){ // Here if option (the variable that we put in char) receives the letter what it does is what is inside the braces,
+                       // in this case, what will happen is that the car will back up, and make a left turn, and then a right turn.
+      motores.back_to (vel);
+      delay (1000);
+      motores.to_the_left (vel);
+      delay (5000);
+      motores.to_the_right (vel);
+      delay (5000);
+      motores.stop();
+    }
+   
+    if(option == 'S'){ // Here if option (the variable that we put in char) receives the letter what it does is what is inside the braces, 
+                       // in this case, what it will do is to stop the motors.
+    motores.stop ();
+    }    
+
+   option = '0'; // Here we set option to have a value of 0, and no other value.
+    
+  }
+}

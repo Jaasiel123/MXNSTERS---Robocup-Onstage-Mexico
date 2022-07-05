@@ -1,0 +1,81 @@
+//This code was made for the Robocup 2022 - Onstage.
+//Team MXNSTERS - Mexico. Made by Joel Alberto Garza Muñoz 
+//LED Display door
+
+#include <Adafruit_Fingerprint.h>
+
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial2);
+
+
+void setup()
+{
+  Serial.begin(9600);
+  while (!Serial);  
+  delay(100);
+  
+  finger.begin(57600);                    //Configuration for the fingerprint sensor to work
+  delay(5);                                    
+  
+  finger.getParameters();
+  
+  finger.getTemplateCount();
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  uint8_t huella;                         
+  huella = getFingerprintID();           
+  
+  delay(50);            
+}
+
+uint8_t getFingerprintID() {
+  uint8_t p = finger.getImage();
+  switch (p) {
+    case FINGERPRINT_OK:
+    
+      break;
+    default:
+
+      return p;
+  }
+
+
+
+  p = finger.image2Tz();
+  switch (p) {
+    case FINGERPRINT_OK:
+
+      break;
+    default:
+      
+      return p;
+  }
+
+  
+  p = finger.fingerSearch();
+  if (p != FINGERPRINT_OK){
+    return p;
+  }
+
+  int id = finger.fingerID;
+
+  Serial.println(id);               //This command prints values to the raspberyy pi 
+    
+  return id;
+}
+
+
+int getFingerprintIDez() {
+  uint8_t p = finger.getImage();
+  if (p != FINGERPRINT_OK)  return -1;
+
+  p = finger.image2Tz();
+  if (p != FINGERPRINT_OK)  return -1;
+
+  p = finger.fingerFastSearch();
+  if (p != FINGERPRINT_OK)  return -1;
+
+  return finger.fingerID;
+}

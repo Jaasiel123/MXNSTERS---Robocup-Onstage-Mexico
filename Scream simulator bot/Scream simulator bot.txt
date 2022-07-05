@@ -1,0 +1,95 @@
+// This code was made for the Robocup 2022 - Onstage.
+// Team MXNSTERS - Mexico. Made by Sussy Reyna Regalado.
+// Scream Simulator bot.
+
+#include "HUSKYLENS.h" 
+#include "SoftwareSerial.h" 
+#include <Servo.h>
+#include <Pixy2.h>
+int RELE = 5;
+int id; //this is used to identify which id signal we want to activate the motor
+
+Pixy2 pixy;                              //here we define the pixy cam
+Servo servoMotor;                        //define the servo motor
+HUSKYLENS huskylens;                    //we define the husky camera
+
+void setup() {
+    Serial.begin(115200);
+    Serial3.begin(9600);
+    pixy.init();
+    Serial1.begin(2400);
+    pinMode(13, OUTPUT);
+    pinMode(RELE, OUTPUT);
+    digitalWrite(RELE, HIGH);  
+    while (!huskylens.begin(Serial3))
+    {
+        Serial.println(F("Begin failed!"));
+        Serial.println(F("1.Please recheck the \"Protocol Type\" in HUSKYLENS (General Settings>>Protocol Type>>Serial 9600)"));
+        Serial.println(F("2.Please recheck the connection."));
+        delay(100);
+                                       //this shows what it will print on the serial monitor when the huskycam is not connected correctly
+    }
+    
+
+    
+}
+
+int activado=0;
+
+void loop() {
+
+  
+  // grab blocks!
+  pixy.ccc.getBlocks();
+  
+  // If there are detect blocks, print them!
+  if (pixy.ccc.numBlocks && activado==0)
+  {
+    Serial.print("DETECTADO PIXY ");  //when the pixycam detects the color you assigned this will be printed in the serial monitor and the following will happen
+
+      digitalWrite(RELE, LOW);        //the relay module will close
+      delay(1000);                   //for one second
+      digitalWrite(RELE, HIGH);      //the relay module will open
+     activado=1;                     //this is a command that says that if the pixy detects the color this will become 1
+  } 
+   
+    if (!huskylens.request()) Serial.println(F("Fail to request data from HUSKYLENS, recheck the connection!"));
+    else if(!huskylens.isLearned()) Serial.println(F("Nothing learned, press learn button on HUSKYLENS to learn one!"));
+    else if(!huskylens.available()) Serial.println(F("No block or arrow appears on the screen!"));
+    else //this is what is printed in the serial monitor when the huskycam doesnt detect anything
+    { 
+      HUSKYLENSResult result = huskylens.read();
+      id=(int)result.ID; 
+      if (id==1 && activado==1) {        //if the facial recognition camera detected the correct face and the id is 1 the following can be activated
+        Serial.println("DETECTADO HUSKY");
+        digitalWrite(13, HIGH);
+        move(0, 553, 1000);  // 0
+        move(15, 553, 1000);  //0
+        move(8, 553, 1000);  //0
+        Serial1.println();
+        delay(1000);
+        digitalWrite(13, LOW);
+        move(0, 1400, 1000);  //90
+        move(15, 1400, 1000);  //90
+        move(8, 1400, 1000);  //90
+        Serial1.println();
+        delay(1000);
+        digitalWrite(13, LOW);
+        move(0, 2425, 1000);  //180
+        move(15, 2425, 1000);  //180
+        move(8, 2425, 1000);  //180
+        Serial1.println();
+        delay(1000);
+      }
+        
+    }
+}
+void move(int servo, int position, int time) {
+  Serial1.print("#");
+  Serial1.print(servo);
+  Serial1.print(" P");
+  Serial1.print(position);
+  Serial1.print(" T");
+  Serial1.print(time);
+
+}

@@ -1,0 +1,320 @@
+// This code was made for the Robocup 2022 - Onstage.
+// Team MXNSTERS - Mexico. Made by Izamary Vázquez Guerra
+// Sullivan bot.
+
+#include <SoftwareSerial.h> // Libraries needed by Huskylens facial detection camera.
+#include <DFRobot_HuskyLens.h>
+#include <HUSKYLENS.h>
+#include <HUSKYLENSMindPlus.h>
+#include <HuskyLensProtocolCore.h>
+
+HUSKYLENS huskylens; // given name to huskylens.
+void printResult(HUSKYLENSResult result); // function used to recieve the result of the camera.
+int id; // variable in which the number of the face detected is saved.
+
+// Pins where the servos are connected to.
+const int rightLeg = 0;
+const int leftLeg = 16;
+const int rightArm = 2;
+const int leftArm = 18;
+const int rightShoulder = 1;
+const int leftShoulder = 17;
+const int rightNeck = 3;
+const int leftNeck = 19;
+const int mouth = 4;
+const int topEyelid = 21;
+const int bottomEyelid = 5;
+const int rightEyebrow = 6;
+const int leftEyebrow = 22;
+
+// Message from the base's Arduino through serial communication.
+char message, turn1, turn2, turn3, turn4;
+
+void setup() {
+  Serial.begin(9600); // to check serial communication
+  Serial1.begin(9600); // communication with huskylens
+  Serial2.begin(9600); // communication with servoboard
+  Serial3.begin(9600); // communication with arduino
+
+  connectHusky();
+}
+
+void loop() {
+  if (Serial3.available()) {
+    message = Serial3.read(); // serial port is read and its value is saved in 'message'
+    if (message == '1') { // the color is orange
+      sayHi();
+    }
+  }
+  walk(); // Here, after saying hi, Sullivan goes to the front of the performance area.
+  blinkk();
+  if (Serial3.available()) {
+    turn1 = Serial3.read(); // serial port is read and its value is saved in 'turn'
+    if (turn1 == '2') { // Sullivan has succesfully turned right.
+      walk();
+      blinkk();
+      scare();
+      Serial3.write('3');
+    }
+  }
+  if(Serial3.available()){
+    turn2 = Serial3.read(); // serial port is read and its value is saved in 'turn'
+    if(turn2 == '4'){
+      walk();
+      blinkk();
+    }
+    turn3 = Serial3.read(); // serial port is read and its value is saved in 'turn'
+    if(turn3 == '5'){
+      walk();
+      blinkk();
+    }
+    turn4 = Serial3.read(); // serial port is read and its value is saved in 'turn'
+    if(turn4 == '6'){
+      after();
+    }
+  }
+}
+
+// This function is used to send instructions to SSC-32 servoboard through serial communication.
+// Serial 2 connects both the Arduino and SSC-32.
+void move(int servo, int position, int time) {
+  Serial2.print("#"); // First, the pin in which the servo is connected to.
+  Serial2.print(servo);
+  Serial2.print(" P"); // Then, the position in which we want the servo. It is given in a scale from 1 to 3000.
+  Serial2.print(position);
+  Serial2.print(" T"); // Finally, the time in which we want the servo to move. It is given in microseconds.
+  Serial2.print(time);
+}
+
+// This function is used at the beggining of the performance.
+// Once sullivan recives a signal from serial port, he says hi.
+// He moves his neck to the right, rises the eyebrows, opens the mouth, and rises his left arm.
+// Then, he comes back to the inicial position.
+void sayHi() {
+  move(rightNeck, 1000, 500); // right
+  move(leftNeck, 1500, 500);
+  move(rightEyebrow, 2200, 500); // happy
+  move(leftEyebrow, 800, 500);
+  move(mouth, 2200, 500);
+  move(leftArm, 1294, 700);
+  delay(700);
+  move(leftShoulder, 2500, 1000);
+  Serial2.println();
+  delay(3000);
+  move(rightEyebrow, 1850, 500); // default
+  move(leftEyebrow, 1150, 500);
+  move(mouth, 2800, 500);
+  move(rightNeck, 1250, 500); // forward
+  move(leftNeck, 1750, 500);
+  move(leftArm, 664, 500);
+  delay(700);
+  move(leftShoulder, 1200, 1000);
+  Serial2.println();
+  delay(2000);
+  Serial.println("sayHi");
+}
+
+// This function makes Sully walk, moving his arms and legs.
+void walk() {
+  move(rightArm, 1100, 1000); // right up and left down
+  move(leftArm, 664, 1000);
+  delay(500);
+  move(rightShoulder, 1, 2500);
+  move(leftShoulder, 1200, 2500);
+  move(rightLeg, 3000, 1000);
+  move(leftLeg, 1500, 1000);
+  Serial2.println();
+  delay(1200);
+  move(rightArm, 1700, 500); // left up and right down
+  move(leftArm, 1294, 1000);
+  delay(500);
+  move(rightShoulder, 1500, 2500);
+  move(leftShoulder, 2500, 2500);
+  move(rightLeg, 1500, 1000);
+  move(leftLeg, 1, 1000);
+  Serial2.println();
+  delay(1200);
+  Serial.println("walk");
+}
+
+// This function is used to make Sullivan blink.
+void blinkk() {
+  move(topEyelid, 1, 500);
+  move(bottomEyelid, 1, 500);
+  Serial2.println();
+  delay(1500);
+  move(topEyelid, 2000, 500);
+  move(bottomEyelid, 2000, 500);
+  Serial2.println();
+  delay(1500);
+  Serial.println("blinkk");
+}
+
+// This function is used to check if the huskylens detects any face in front of Sullivan.
+// If it is detected, then Sully scares.
+void scare() {
+  if (!huskylens.request()) Serial.println(F("Fail to request data from HUSKYLENS, recheck the connection!"));
+  else if (!huskylens.isLearned()) Serial.println(F("Nothing learned, press learn button on HUSKYLENS to learn one!"));
+  else if (!huskylens.available()) Serial.println(F("No block or arrow appears on the screen!"));
+  else
+  {
+    Serial.println(F("###########"));
+    while (huskylens.available()) {
+      HUSKYLENSResult result = huskylens.read();
+      id = (int)result.ID;
+      printResult(result);
+      if (id = 1) {
+        scare();
+      }
+    }
+  }
+}
+
+// This function is used to check the connection with serial ports of huskylens.
+void connectHusky() {
+  while (!huskylens.begin(Serial1)) {
+    Serial.println(F("Begin failed!"));
+    Serial.println(F("1.Please recheck the \"Protocol Type\" in HUSKYLENS (General Settings>>Protocol Type>>Serial 9600)"));
+    Serial.println(F("2.Please recheck the connection."));
+    delay(100);
+  }
+}
+
+// Function used to print result and location of the object (face) in serial monitor.
+void printResult(HUSKYLENSResult result){
+    if (result.command == COMMAND_RETURN_BLOCK){
+        Serial.println(String()+F("Block:xCenter=")+result.xCenter+F(",yCenter=")+result.yCenter+F(",width=")+result.width+F(",height=")+result.height+F(",ID=")+result.ID);
+    }
+    else if (result.command == COMMAND_RETURN_ARROW){
+        Serial.println(String()+F("Arrow:xOrigin=")+result.xOrigin+F(",yOrigin=")+result.yOrigin+F(",xTarget=")+result.xTarget+F(",yTarget=")+result.yTarget+F(",ID=")+result.ID);
+    }
+    else{
+        Serial.println("Object unknown!");
+    }
+}
+
+// What happens once Sullivan has arrived to his final position.
+void after(){
+  blinkk();
+  scare();
+  elbowsMovement();
+  headMovement();
+}
+
+// Movement of Sullivan's arms.
+void armsMovement(){
+  move(rightArm, 1100, 500); // left up & right down
+  move(leftArm, 664, 500);
+  delay(500);
+  move(rightShoulder, 1, 1500);
+  move(leftShoulder, 1200, 1500);
+  Serial2.println();
+  delay(1500);
+  move(rightArm, 1700, 500); // right up & left down
+  move(leftArm, 1294, 500);
+  delay(500);
+  move(rightShoulder, 1500, 1500);
+  move(leftShoulder, 2500, 1500);
+  Serial2.println();
+  delay(1500);
+}
+
+// Movement of Sullivan's elbows.
+void elbowsMovement(){
+  move(rightArm, 1700, 700); // up
+  move(leftArm, 664, 700);
+  Serial2.println();
+  delay(1500);
+  move(rightArm, 1100, 700); // down
+  move(leftArm, 1294, 700);
+  Serial2.println();
+  delay(1500);
+}
+
+// Function for sullivan to move the neck, mouth and create face expressions.
+void headMovement(){
+  move(rightNeck, 1500, 500); // up
+  move(leftNeck, 1500, 500);
+  move(rightEyebrow, 1500, 500); // angry
+  move(leftEyebrow, 1500, 500);
+  move(mouth, 1700, 500); 
+  Serial2.println();
+  delay(2000);
+  move(rightNeck, 1250, 500); // forward
+  move(leftNeck, 1750, 500);
+  move(rightEyebrow, 2200, 500); // happy
+  move(leftEyebrow, 800, 500);
+  move(mouth, 2300, 500); 
+  Serial2.println();
+  delay(1500);
+  move(rightNeck, 1000, 500); // down
+  move(leftNeck, 2000, 500);
+  move(rightEyebrow, 1500, 500); // angry
+  move(leftEyebrow, 1500, 500);
+  move(mouth, 1700, 500); 
+  Serial2.println();
+  delay(2000);
+  move(rightNeck, 1250, 500); // forward
+  move(leftNeck, 1750, 500);
+  move(rightEyebrow, 2200, 500); // happy
+  move(leftEyebrow, 800, 500);
+  move(mouth, 2300, 500); 
+  Serial2.println();
+  delay(1500);
+  move(rightNeck, 1000, 500); // right
+  move(leftNeck, 1500, 500);
+  move(rightEyebrow, 1500, 500); // angry
+  move(leftEyebrow, 1500, 500);
+  move(mouth, 1700, 500); 
+  Serial2.println();
+  delay(2000);
+  move(rightNeck, 1250, 500); // forward
+  move(leftNeck, 1750, 500);
+  move(rightEyebrow, 2200, 500); // happy
+  move(leftEyebrow, 800, 500);
+  move(mouth, 2300, 500); 
+  Serial2.println();
+  delay(1500);
+  move(rightNeck, 1500, 500); // left
+  move(leftNeck, 2000, 500);
+  move(rightEyebrow, 1500, 500); // angry
+  move(leftEyebrow, 1500, 500);
+  move(mouth, 1700, 500); 
+  Serial2.println();
+  delay(2000);
+  move(rightNeck, 1250, 500); // forward
+  move(leftNeck, 1750, 500);
+  move(rightEyebrow, 2200, 500); // happy
+  move(leftEyebrow, 800, 500);
+  move(mouth, 2300, 500); 
+  Serial2.println();
+  delay(1500);
+  move(rightNeck, 700, 1000); // right/up
+  move(leftNeck, 700, 1000);
+  move(rightEyebrow, 1500, 500); // angry
+  move(leftEyebrow, 1500, 500);
+  move(mouth, 1700, 500); 
+  Serial2.println();
+  delay(2500);
+  move(rightNeck, 1250, 500); // forward
+  move(leftNeck, 1750, 500);
+  move(rightEyebrow, 2200, 500); // happy
+  move(leftEyebrow, 800, 500);
+  move(mouth, 2300, 500); 
+  Serial2.println();
+  delay(1500);
+  move(rightNeck, 2300  , 1000); // left/up
+  move(leftNeck, 2300, 1000);
+  move(rightEyebrow, 1500, 500); // angry
+  move(leftEyebrow, 1500, 500);
+  move(mouth, 1700, 500); 
+  Serial2.println();
+  delay(2500);
+  move(rightNeck, 1250, 500); // forward
+  move(leftNeck, 1750, 500);
+  move(rightEyebrow, 2200, 500); // happy
+  move(leftEyebrow, 800, 500);
+  move(mouth, 2300, 500); 
+  Serial2.println();
+  delay(1500);
+}
