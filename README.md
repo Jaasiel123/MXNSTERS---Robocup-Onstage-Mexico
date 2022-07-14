@@ -1,6 +1,6 @@
 # MXNSTERS---Robocup-Onstage-Mexico
 
-Link of our Technical Interview Presentation: https://www.canva.com/design/DAFFGN215fA/IAdWhcyTipHaRXPf7teSDw/view?utm_content=DAFFGN215fA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+Link of our Technical Interview Presentation: https://www.canva.com/design/DAFFGN215fA/IAdWhcyTipHaRXPf7teSDw/view?utm_content=DAFFGN215fA&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 Documentation of codes that we are using for the International Robocup Tournament, in the Onstage category where we will develop a performance of the movie Monster Inc.
 
